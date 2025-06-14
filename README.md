@@ -5,7 +5,7 @@
 </p>
 
 >[!important]
->Currently under active development and testing. Full code will be released once all bugs are resolved.
+>Currently under active development and testing. Full code will be released once all bugs are resolved. Do not download/run until release v1.0.0.
 
 LureKit is a modern phishing infrastructure toolkit that helps you quickly deploy, manage, and destroy phishing environments for internal security assessments, social engineering simulations, and campaign testing - providing the ability to send phishing emails, serve branded landing pages, and collect credentials in a simple easy to use script.
 
