@@ -12,30 +12,48 @@ LureKit is a modern phishing infrastructure toolkit that helps you quickly deplo
 # What It Does
 
 - Sends phishing emails using Mailgun via SMTP
-- Deploys GoPhish backend on a clean VPS
+- Deploys GoPhish backend on a clean VPS with hardened configuration (removed standard IOCs)
 - Deploys NGINX redirector with TLS and region-based filtering (optional)
 - Supports multiple client subdomains like login.company.co.uk, mail.portalsite.net
 - Uses Cloudflare for DNS management (can used other hosting providers)
 - Can be taken offline/pointed to benign pages easily to protect domain reputation
 - Designed to avoid detection and indexing by scanners (GeoIP, bot filters, anti-crawler rules)
+- Fully automatable using Terraform + Ansible
 
-# Basic Workflow
+# Components
 
-- Clone the repo and configure environment variables
-- Run the `gophish-deploy.sh` script on your GoPhish VPS
-- Run the `redirector-deploy.sh` script on your NGINX redirector VPS
-- Configure DNS for `phish.yourdomain.com` and `login.yourdomain.com`
-- SSH tunnel into GoPhish admin panel for management
-- Launch campaign, collect results
-- Destroy infra or take it offline to preserve domain
+| Component     | Purpose                            |
+|---------------|------------------------------------|
+| `GoPhish`     | Backend campaign + credential capture |
+| `NGINX`       | TLS termination and redirector logic |
+| `Mailgun`     | Email delivery with proper SPF/DKIM |
+| `Terraform`   | VPS infrastructure provisioning (DigitalOcean) |
+| `Ansible`     | VPS config: installs GoPhish, NGINX, TLS, etc |
+| `.env`        | Operator-defined settings (domain, SMTP, ports) |
+
+# Deployment Workflow
+
+1. **Prepare config**  
+   - Clone repo and create `.env` from `.env.example`
+2. **Provision infrastructure**  
+   - Use `terraform/` to deploy GoPhish + Redirector VPS
+3. **Configure environments**  
+   - Use `ansible/` to install and harden services
+4. **Tunnel into GoPhish admin**  
+   - SSH forward port to securely access admin UI
+5. **Run phishing campaign**  
+   - Send Mailgun SMTP emails to targets, capture via landing pages
+6. **Clean up**  
+   - Run `destroy-all.sh` or `terraform destroy` to decommission if necessary
 
 # Requirements
 
 A couple of requirements are necessary for this to run:
 
-- Managed domain (e.g., yourdomain.co.uk)
-- VPS 1: GoPhish backend (e.g., phish.yourdomain.co.uk)
-- VPS 2: Redirector for TLS + phishing page (e.g., login.yourdomain.co.uk)
-- A Mailgun account and verified domain with working SMTP
-- Linux system (Ubuntu 20.04 or 22.04 preferred)
+- Registered domain (e.g., `yourdomain.co.uk`)
+- VPS 1: GoPhish backend (e.g., `phish.yourdomain.co.uk`)
+- VPS 2: Redirector (e.g., `login.yourdomain.co.uk`)
+- Verified Mailgun domain (w/ SMTP credentials)
+- Cloudflare (optional, for DNS automation)
+- Ubuntu 20.04 or 22.04 LTS
 
