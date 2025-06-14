@@ -1,6 +1,5 @@
 # LureKit ignore rules
 
-# Environment and secret files
 .env
 *.log
 *.sqlite
@@ -8,16 +7,13 @@
 *.crt
 *.key
 
-# OS / editor junk
 .DS_Store
 *.swp
 *.bak
 __pycache__/
 
-# Build / temp files
 *.zip
 *.tar
 *.gz
 
-# Gophish compiled binaries
 gophish/
